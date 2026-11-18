@@ -46,6 +46,7 @@ export class GameHud {
   private readonly highVal: HTMLElement;
   private readonly linesVal: HTMLElement;
   private readonly levelVal: HTMLElement;
+  private readonly mobileLevelVal: HTMLElement;
   private readonly timeVal: HTMLElement;
   private readonly comboBadge: HTMLElement;
   private readonly b2bBadge: HTMLElement;
@@ -61,14 +62,14 @@ export class GameHud {
     this.pauseButton = h(
       'button',
       {
-        class: 'pause-btn glass-btn',
+        class: 'pause-btn',
         type: 'button',
         'data-pause-trigger': true,
         'data-action': 'pause',
         'aria-label': 'Pause game (Esc or P)',
         title: 'Pause (Esc / P)',
       },
-      createIcon('pause', { className: 'pause-icon', size: 18 }),
+      createIcon('pause', { className: 'pause-icon', size: 28 }),
       h('span', { class: 'pause-label', text: 'Pause' })
     );
     this.pauseButton.addEventListener('click', (e) => {
@@ -148,11 +149,12 @@ export class GameHud {
       h('div', { class: 'hud-panel glass next-panel' }, h('span', { class: 'panel-title', text: 'NEXT' }), nextList)
     );
 
-    // Stats (Score, High Score, Lines, Level, Time)
+    // Stats (Score, High Score, Lines, plus Desktop Level & Time)
     this.scoreVal = h('span', { class: 'stat-value num', text: '0' });
     this.highVal = h('span', { class: 'stat-value num', text: '0' });
     this.linesVal = h('span', { class: 'stat-value num', text: '0' });
     this.levelVal = h('span', { class: 'stat-value num', text: '1' });
+    this.mobileLevelVal = h('span', { class: 'hud-level-value num', text: '1' });
     this.timeVal = h('span', { class: 'stat-value num', text: '0:00' });
 
     const statsPanel = h(
@@ -161,8 +163,15 @@ export class GameHud {
       statItem('SCORE', this.scoreVal, 'stat-score'),
       statItem('HIGH', this.highVal, 'stat-high'),
       statItem('LINES', this.linesVal, 'stat-lines'),
-      statItem('LEVEL', this.levelVal, 'stat-level'),
+      statItem('LEVEL', this.levelVal, 'stat-level is-desktop-stat'),
       statItem('TIME', this.timeVal, 'stat-time is-desktop-stat')
+    );
+
+    const levelIndicator = h(
+      'div',
+      { class: 'hud-level-wrap', 'aria-label': 'Current level' },
+      h('span', { class: 'hud-level-label', text: 'LEVEL' }),
+      this.mobileLevelVal
     );
 
     const hintClose = h(
@@ -192,6 +201,7 @@ export class GameHud {
       { class: 'hud-layout' },
       h('div', { class: 'hud-pause-wrap' }, this.pauseButton),
       statsPanel,
+      levelIndicator,
       leftRail,
       this.boardStage,
       nextPanel,
@@ -229,6 +239,7 @@ export class GameHud {
     setText(this.highVal, formatNumber(high));
     setText(this.linesVal, formatNumber(snapshot.lines));
     setText(this.levelVal, String(snapshot.level));
+    setText(this.mobileLevelVal, String(snapshot.level));
     setText(this.timeVal, formatDuration(snapshot.durationMs));
 
     const hasCombo = snapshot.combo >= 1;

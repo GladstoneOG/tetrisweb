@@ -591,15 +591,7 @@ export class LuminoTetrisApp {
 
   private showInitialHint(): void {
     this.clearHintTimer();
-    if (this.settings.hintSeen) {
-      this.hud.setHintVisible(false);
-      return;
-    }
-    this.hud.setHintVisible(true);
-    this.hintTimer = setTimeout(() => {
-      this.hud.setHintVisible(false);
-      this.settings = updateSettings({ hintSeen: true });
-    }, 7000);
+    this.hud.setHintVisible(false);
   }
 
   private clearHintTimer(): void {

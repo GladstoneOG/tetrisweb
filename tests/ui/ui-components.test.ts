@@ -61,9 +61,9 @@ describe('UI Storage & Validation', () => {
     clearProfile();
     expect(loadProfile()).toBeNull();
 
-    expect(loadSettings()).toEqual({ ghostEnabled: true, startLevel: 1, hintSeen: false });
+    expect(loadSettings()).toEqual({ ghostEnabled: true, startLevel: 1, hintSeen: true });
     const next = updateSettings({ ghostEnabled: false, startLevel: 99 });
-    expect(next).toEqual({ ghostEnabled: false, startLevel: 15, hintSeen: false });
+    expect(next).toEqual({ ghostEnabled: false, startLevel: 15, hintSeen: true });
     expect(loadSettings().ghostEnabled).toBe(false);
   });
 });

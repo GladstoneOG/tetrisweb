@@ -283,8 +283,12 @@ describe('LuminoTetrisApp Integration', () => {
     expect(app.game.getSnapshot().level).toBe(7);
     expect(app.game.getSnapshot().ghostEnabled).toBe(false);
 
-    // Hold box has no clutter hint and HUD exposes board alignment CSS variables
+    // Hold box has no clutter hint, bottom hint is hidden by default, and 3-piece top header is synced
     expect(mount.querySelector('.hold-box .panel-key-hint')).toBeNull();
+    expect((mount.querySelector('.hud-hint') as HTMLElement).hidden).toBe(true);
+    expect(mount.querySelector('.hud-pause-wrap')).not.toBeNull();
+    expect(mount.querySelector('.hud-stats')).not.toBeNull();
+    expect(mount.querySelector('.hud-level-wrap .hud-level-value')?.textContent).toBe('7');
     expect(app.hud.element.style.getPropertyValue('--board-top-offset')).toMatch(/^\d+px$/);
     expect(app.hud.element.style.getPropertyValue('--board-left-offset')).toMatch(/^\d+px$/);
     expect(app.hud.element.style.getPropertyValue('--board-right-offset')).toMatch(/^\d+px$/);

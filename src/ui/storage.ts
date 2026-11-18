@@ -30,7 +30,7 @@ export interface UiSettings {
 export const DEFAULT_SETTINGS: UiSettings = {
   ghostEnabled: true,
   startLevel: 1,
-  hintSeen: false,
+  hintSeen: true,
 };
 
 function getStorage(): Storage | null {
@@ -123,7 +123,7 @@ export function loadSettings(): UiSettings {
   return {
     ghostEnabled: typeof parsed.ghostEnabled === 'boolean' ? parsed.ghostEnabled : DEFAULT_SETTINGS.ghostEnabled,
     startLevel: clampLevel(parsed.startLevel ?? DEFAULT_SETTINGS.startLevel),
-    hintSeen: Boolean(parsed.hintSeen),
+    hintSeen: typeof parsed.hintSeen === 'boolean' ? parsed.hintSeen : DEFAULT_SETTINGS.hintSeen,
   };
 }
 

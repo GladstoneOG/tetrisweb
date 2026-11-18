@@ -250,14 +250,22 @@ summary:focus-visible {
 
 .menu-exit-wrap {
   position: fixed;
-  top: max(8px, var(--safe-top));
-  left: max(8px, var(--safe-left));
+  top: max(12px, var(--safe-top));
+  left: max(12px, var(--safe-left));
   z-index: 8;
 }
 
 .menu-exit-btn {
   width: 44px;
+  min-width: 44px;
+  min-height: 44px;
   padding: 0;
+  border-radius: 12px;
+  background: rgba(12, 17, 42, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(var(--theme-accent-rgb), 0.34);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 }
 
 .menu-shell {
@@ -761,7 +769,7 @@ kbd {
    ========================================================================== */
 
 .hud-screen {
-  --hud-pad-top: max(8px, var(--safe-top));
+  --hud-pad-top: max(calc(var(--safe-top) + 12px), 10dvh);
   --hud-pad-right: max(8px, var(--safe-right));
   --hud-pad-bottom: max(8px, var(--safe-bottom));
   --hud-pad-left: max(8px, var(--safe-left));
@@ -787,20 +795,23 @@ kbd {
   width: 100%;
   height: 100%;
   display: grid;
-  gap: 8px 0px;
+  gap: 10px 0px;
   grid-template-columns: var(--rail-w) minmax(0, 1fr) var(--rail-w);
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr);
   grid-template-areas:
-    "pause stats stats"
-    "left  board right"
-    "hint  hint  hint";
+    "pause stats level"
+    "left  board right";
 }
 
-/* Pause button strictly TOP-LEFT */
+/* Top-left transparent Pause button aligned horizontally with Hold */
 .hud-pause-wrap {
   grid-area: pause;
-  justify-self: start;
+  justify-self: stretch;
   align-self: center;
+  display: flex;
+  justify-content: center;
+  transform: translateX(var(--board-left-shift));
+  z-index: 3;
 }
 
 .pause-btn {
@@ -808,38 +819,55 @@ kbd {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-width: 44px;
-  min-height: 44px;
-  padding: 0 12px;
-  border-radius: 12px;
-  background: rgba(12, 17, 42, 0.72);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(var(--theme-accent-rgb), 0.34);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  width: 100%;
+  min-width: 48px;
+  min-height: 54px;
+  padding: 6px;
+  border-radius: 14px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   color: var(--text-main);
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.58));
+  transition: transform 140ms ease, opacity 140ms ease, color 140ms ease;
 }
 
 .pause-btn:hover {
-  border-color: rgba(var(--theme-accent-rgb), 0.7);
-  background: rgba(20, 28, 64, 0.85);
+  color: var(--theme-accent);
+  transform: scale(1.06);
+}
+
+.pause-btn:active {
+  transform: scale(0.95);
+}
+
+.pause-icon {
+  width: 30px;
+  height: 30px;
 }
 
 .pause-label {
   display: none;
-  font-size: 0.85rem;
-  font-weight: 650;
+  font-size: 0.92rem;
+  font-weight: 700;
 }
 
-/* Top stats bar (mobile) */
+/* Top center stats pill (SCORE, HIGH, LINES) aligned over the board */
 .hud-stats {
   grid-area: stats;
-  margin-left: 6px;
+  justify-self: center;
+  width: min(
+    calc(100% - var(--rail-gap) * 2),
+    calc(100% - var(--board-left-shift) + var(--board-right-shift) - var(--rail-gap) * 2)
+  );
+  margin-left: 0;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.15fr) minmax(0, 0.85fr);
   align-items: center;
-  gap: 4px;
-  padding: 6px 8px;
+  gap: 6px;
+  padding: 9px 10px;
   border-radius: var(--radius-md);
 }
 
@@ -847,19 +875,22 @@ kbd {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 2px;
   min-width: 0;
 }
 
 .stat-label {
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   font-weight: 750;
   letter-spacing: 0.1em;
   color: var(--text-muted);
 }
 
 .stat-value {
-  font-size: clamp(0.84rem, 3.3vw, 1.12rem);
-  font-weight: 800;
+  font-size: clamp(1.08rem, 4.9vw, 1.58rem);
+  font-weight: 850;
+  line-height: 1.08;
   color: var(--text-main);
   white-space: nowrap;
   overflow: hidden;
@@ -873,6 +904,43 @@ kbd {
 
 .is-desktop-stat {
   display: none;
+}
+
+/* Top-right transparent Level indicator aligned horizontally with Next */
+.hud-level-wrap {
+  grid-area: level;
+  justify-self: stretch;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 54px;
+  transform: translateX(var(--board-right-shift));
+  text-align: center;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.hud-level-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--text-soft);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.65);
+}
+
+.hud-level-value {
+  font-size: clamp(1.5rem, 6.2vw, 2.05rem);
+  font-weight: 850;
+  line-height: 1;
+  color: var(--text-main);
+  text-shadow:
+    0 0 14px rgba(var(--theme-accent-rgb), 0.45),
+    0 2px 10px rgba(0, 0, 0, 0.72);
 }
 
 /* Left rail: Hold */
@@ -1044,6 +1112,10 @@ kbd {
 
 /* Short Landscape Phone fallback (width > height, short height < 560px) */
 @media (max-height: 559px) and (min-aspect-ratio: 1/1) {
+  .hud-screen {
+    --hud-pad-top: max(12px, var(--safe-top));
+  }
+
   .hud-layout {
     gap: 6px 0px;
     grid-template-columns: minmax(96px, 148px) minmax(140px, calc((100dvh - 16px) * 0.54)) minmax(120px, 176px);
@@ -1058,7 +1130,25 @@ kbd {
     position: absolute;
     top: 0;
     left: 0;
+    justify-self: start;
+    transform: none;
     z-index: 6;
+  }
+
+  .pause-btn {
+    width: auto;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 6px 8px;
+  }
+
+  .pause-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .hud-level-wrap {
+    display: none;
   }
 
   .hud-left {
@@ -1082,6 +1172,7 @@ kbd {
   .hud-stats {
     grid-area: stats;
     align-self: start;
+    width: 100%;
     margin-left: 0;
     position: relative;
     z-index: 2;
@@ -1089,6 +1180,10 @@ kbd {
     grid-template-columns: 1fr 1fr;
     gap: 4px 6px;
     padding: 6px 8px;
+  }
+
+  .hud-stats .stat-value {
+    font-size: 0.96rem;
   }
 
   .hud-hint {
@@ -1130,7 +1225,25 @@ kbd {
     position: absolute;
     top: 0;
     left: 0;
+    justify-self: start;
+    transform: none;
     z-index: 8;
+  }
+
+  .pause-btn {
+    width: auto;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 6px 10px;
+  }
+
+  .pause-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .hud-level-wrap {
+    display: none;
   }
 
   .hud-left {
@@ -1193,6 +1306,7 @@ kbd {
   .hud-stats {
     grid-area: stats;
     align-self: start;
+    width: 100%;
     margin-left: 0;
     position: relative;
     z-index: 2;
