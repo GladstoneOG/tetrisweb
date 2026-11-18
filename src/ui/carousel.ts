@@ -9,6 +9,7 @@ import { clampLevel } from './storage';
 
 export interface LevelTier {
   level: number;
+  speedPips: number;
   themeName: string;
   accentHex: string;
   accentRgb: string;
@@ -19,6 +20,7 @@ export function getLevelTier(level: number): LevelTier {
   const theme = getThemeForLevel(safe);
   return {
     level: safe,
+    speedPips: Math.max(1, Math.min(5, Math.ceil(safe / 3))),
     themeName: theme.name,
     accentHex: rgbToHex(theme.accent),
     accentRgb: rgbCss(theme.accent),
@@ -110,6 +112,10 @@ export class LevelCarousel {
   }
 
   private buildCard(tier: LevelTier): HTMLButtonElement {
+    const pips = h('span', { class: 'speed-pips', 'aria-hidden': 'true' });
+    for (let i = 1; i <= 5; i++) {
+      pips.append(h('i', { class: i <= tier.speedPips ? 'on' : '' }));
+    }
     const card = h(
       'button',
       {
@@ -121,7 +127,8 @@ export class LevelCarousel {
         style: `--card-accent: ${tier.accentHex}; --card-accent-rgb: ${tier.accentRgb};`,
       },
       h('span', { class: 'level-card-label', text: 'LEVEL' }),
-      h('span', { class: 'level-card-num', text: String(tier.level) })
+      h('span', { class: 'level-card-num', text: String(tier.level) }),
+      pips
     );
     card.addEventListener('click', () => {
       if (performance.now() < this.suppressClickUntil) return;

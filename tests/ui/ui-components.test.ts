@@ -115,11 +115,13 @@ describe('LevelCarousel', () => {
     const cards = carousel.element.querySelectorAll('.level-card');
     expect(cards).toHaveLength(15);
 
-    // Decluttered level-only cards: ONLY LEVEL + number, no names, vibes, speed pips, or s / row
+    // Cards show LEVEL + number + 5-pip difficulty bar (no names, vibes, or s / row)
     expect(carousel.element.querySelector('.level-card-title')).toBeNull();
     expect(carousel.element.querySelector('.level-card-vibe')).toBeNull();
-    expect(carousel.element.querySelector('.speed-pips')).toBeNull();
     expect(carousel.element.querySelector('.level-card-speed')).toBeNull();
+    expect(cards[0].querySelectorAll('.speed-pips i')).toHaveLength(5);
+    expect(cards[0].querySelectorAll('.speed-pips i.on')).toHaveLength(1);
+    expect(cards[14].querySelectorAll('.speed-pips i.on')).toHaveLength(5);
     expect(cards[0].textContent).toBe('LEVEL1');
     expect(carousel.element.textContent).not.toContain('Stargazer');
     expect(carousel.element.textContent).not.toContain('s / row');

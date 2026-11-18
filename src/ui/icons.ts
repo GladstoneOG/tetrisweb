@@ -23,6 +23,7 @@ export type IconName =
 export interface IconOptions {
   size?: number;
   className?: string;
+  strokeWidth?: number;
 }
 
 type SvgNodeSpec = {
@@ -161,7 +162,7 @@ export function createIcon(name: IconName, options: IconOptions = {}): SVGSVGEle
   svg.setAttribute('viewBox', spec.viewBox ?? '0 0 24 24');
   svg.setAttribute('fill', 'none');
   svg.setAttribute('stroke', 'currentColor');
-  svg.setAttribute('stroke-width', '2');
+  svg.setAttribute('stroke-width', String(options.strokeWidth ?? 2));
   svg.setAttribute('stroke-linecap', 'round');
   svg.setAttribute('stroke-linejoin', 'round');
   svg.setAttribute('aria-hidden', 'true');

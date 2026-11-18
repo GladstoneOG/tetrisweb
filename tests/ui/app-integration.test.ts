@@ -125,12 +125,13 @@ describe('LuminoTetrisApp Integration', () => {
   it('shows decluttered TETRIS menu, first-time login, offline fallback, and no Local profile / Switch User', async () => {
     app = createApp();
 
-    // Hero is ONLY TETRIS
+    // Hero is TETRIS + by Johan (no COSMIC BLOCKS pill or promo subtitle)
     const hero = mount.querySelector('.menu-hero') as HTMLElement;
     expect(hero.querySelector('.brand-title')?.textContent).toBe('TETRIS');
+    expect(hero.querySelector('.brand-by')?.textContent).toBe('by Johan');
     expect(hero.querySelector('.brand-pill')).toBeNull();
     expect(hero.querySelector('.brand-sub')).toBeNull();
-    expect(hero.textContent?.trim()).toBe('TETRIS');
+    expect(mount.querySelector('.play-btn-lvl')).toBeNull();
 
     const loginCard = mount.querySelector('.login-card') as HTMLElement;
     const menuPanel = mount.querySelector('.menu-panel') as HTMLElement;

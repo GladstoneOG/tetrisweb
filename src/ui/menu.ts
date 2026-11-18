@@ -73,13 +73,13 @@ export class MainMenu {
     this.exitButton = h(
       'button',
       {
-        class: 'menu-exit-btn pause-btn glass-btn',
+        class: 'menu-exit-btn',
         type: 'button',
         'data-action': 'menu-exit',
         'aria-label': 'Exit game',
         title: 'Exit game',
       },
-      createIcon('exitDoor', { className: 'exit-door-icon', size: 20 })
+      createIcon('exitDoor', { className: 'exit-door-icon', size: 34, strokeWidth: 2.6 })
     );
     this.exitButton.addEventListener('click', () => {
       this.callbacks.onUiClick?.();
@@ -87,11 +87,12 @@ export class MainMenu {
     });
     const exitWrap = h('div', { class: 'menu-exit-wrap' }, this.exitButton);
 
-    // 1. Minimal hero header
+    // 1. Hero header
     const hero = h(
       'header',
       { class: 'menu-hero' },
-      h('h1', { class: 'brand-title', text: 'TETRIS' })
+      h('h1', { class: 'brand-title', text: 'TETRIS' }),
+      h('p', { class: 'brand-by', text: 'by Johan' })
     );
 
     // 2. First-time parent-friendly login card
@@ -174,7 +175,6 @@ export class MainMenu {
       initialLevel: options.initialLevel,
       onChange: (level) => {
         this.callbacks.onUiClick?.();
-        this.updatePlayButtonLabel(level);
         this.callbacks.onLevelChange(level);
       },
     });
@@ -219,12 +219,20 @@ export class MainMenu {
     this.sfxMuteBtn = sfxControl.muteBtn;
     this.sfxSlider = sfxControl.slider;
 
-    this.playBtn = h('button', {
-      class: 'btn btn-primary btn-play',
-      type: 'button',
-      'data-action': 'play',
-    });
-    this.updatePlayButtonLabel(options.initialLevel);
+    this.playBtn = h(
+      'button',
+      {
+        class: 'btn btn-primary btn-play',
+        type: 'button',
+        'data-action': 'play',
+      },
+      h(
+        'span',
+        { class: 'play-btn-main' },
+        createIcon('play', { size: 22 }),
+        h('span', { text: 'Play' })
+      )
+    );
     this.playBtn.addEventListener('click', () => {
       this.callbacks.onPlay(this.carousel.getLevel());
     });
@@ -369,18 +377,6 @@ export class MainMenu {
       slider
     );
     return { row, muteBtn, slider };
-  }
-
-  private updatePlayButtonLabel(level: number): void {
-    this.playBtn.replaceChildren(
-      h(
-        'span',
-        { class: 'play-btn-main' },
-        createIcon('play', { size: 19 }),
-        h('span', { text: 'Play' })
-      ),
-      h('span', { class: 'play-btn-lvl', text: `Level ${level}` })
-    );
   }
 
   private syncProfileUI(): void {
