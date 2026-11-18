@@ -333,37 +333,69 @@ describe('InputController - Mouse, Touch, and Multitouch Gestures', () => {
     surface.dispatchEvent(makePointerEvent('pointerup', { pointerId: 2, clientX: 228, clientY: 260 }));
   });
 
-  it('slams once per fast downward swipe without soft-dropping and ignores slow or diagonal downward movement', () => {
-    // Fast downward swipe: 60px in 40ms (1.5 px/ms, passing through 30px mid-flick)
+  it('slams ONLY on quick swipe-down release and blocks slam when held, paused, or slowed before release', () => {
+    // 1. Quick swipe down (64px in 50ms -> pointerup at 60ms) triggers slam ON release (not during move)
     surface.dispatchEvent(makePointerEvent('pointerdown', { pointerId: 1, clientX: 100, clientY: 100 }));
-    clockMs += 20;
-    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 1, clientX: 102, clientY: 130 }));
-    clockMs += 20;
-    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 1, clientX: 104, clientY: 160 }));
-    expect(actions.slam).toHaveBeenCalledTimes(1);
+    clockMs += 25;
+    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 1, clientX: 102, clientY: 132 }));
+    clockMs += 25;
+    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 1, clientX: 104, clientY: 164 }));
+    expect(actions.slam).not.toHaveBeenCalled(); // Must NOT slam before letting go!
     expect(actions.softDrop).not.toHaveBeenCalled();
 
-    // Further downward movement on the SAME swipe does NOT double-slam or soft-drop
-    clockMs += 20;
-    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 1, clientX: 104, clientY: 220 }));
-    surface.dispatchEvent(makePointerEvent('pointerup', { pointerId: 1, clientX: 104, clientY: 220 }));
+    clockMs += 10;
+    surface.dispatchEvent(makePointerEvent('pointerup', { pointerId: 1, clientX: 104, clientY: 164 }));
     expect(actions.slam).toHaveBeenCalledTimes(1);
     expect(actions.softDrop).not.toHaveBeenCalled();
     expect(actions.rotateCW).not.toHaveBeenCalled();
 
-    // Slow downward drift: 50px over 600ms -> soft-drops once, MUST NOT slam
+    // 2. Drag down fast and DO NOT let go (finger stays down > 160ms) -> soft-drops instead, NEVER slams
     surface.dispatchEvent(makePointerEvent('pointerdown', { pointerId: 2, clientX: 100, clientY: 100 }));
-    clockMs += 600;
-    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 2, clientX: 100, clientY: 150 }));
-    surface.dispatchEvent(makePointerEvent('pointerup', { pointerId: 2, clientX: 100, clientY: 150 }));
+    clockMs += 40;
+    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 2, clientX: 100, clientY: 165 }));
     expect(actions.slam).toHaveBeenCalledTimes(1);
-    expect(actions.softDrop).toHaveBeenCalledTimes(1);
+    clockMs += 200; // user keeps finger pressed on screen without lifting, nudges 5px
+    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 2, clientX: 100, clientY: 170 }));
+    expect(actions.slam).toHaveBeenCalledTimes(1);
+    expect(actions.softDrop).toHaveBeenCalled();
+    const softDropsBeforeRelease = actions.softDrop.mock.calls.length;
+    clockMs += 80;
+    surface.dispatchEvent(makePointerEvent('pointerup', { pointerId: 2, clientX: 100, clientY: 170 }));
+    expect(actions.slam).toHaveBeenCalledTimes(1);
 
-    // Fast diagonal swipe (dx=45, dy=50 -> dy <= 45 * 1.35) MUST NOT slam
+    // 3. Drag down fast, then STOP/PAUSE (80ms) before letting go -> MUST NOT slam
     surface.dispatchEvent(makePointerEvent('pointerdown', { pointerId: 3, clientX: 100, clientY: 100 }));
     clockMs += 50;
-    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 3, clientX: 145, clientY: 150 }));
-    surface.dispatchEvent(makePointerEvent('pointerup', { pointerId: 3, clientX: 145, clientY: 150 }));
+    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 3, clientX: 100, clientY: 180 }));
+    clockMs += 80; // stopped before lifting
+    surface.dispatchEvent(makePointerEvent('pointerup', { pointerId: 3, clientX: 100, clientY: 180 }));
+    expect(actions.slam).toHaveBeenCalledTimes(1);
+
+    // 4. Drag down fast (80px in 50ms), then SLOW DOWN (8px over 100ms) before letting go -> MUST NOT slam
+    surface.dispatchEvent(makePointerEvent('pointerdown', { pointerId: 4, clientX: 100, clientY: 100 }));
+    clockMs += 50;
+    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 4, clientX: 100, clientY: 180 }));
+    clockMs += 50;
+    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 4, clientX: 100, clientY: 184 }));
+    clockMs += 50;
+    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 4, clientX: 100, clientY: 188 }));
+    clockMs += 10;
+    surface.dispatchEvent(makePointerEvent('pointerup', { pointerId: 4, clientX: 100, clientY: 188 }));
+    expect(actions.slam).toHaveBeenCalledTimes(1);
+
+    // 5. Slow downward drift: 60px over 600ms -> soft-drops, MUST NOT slam
+    surface.dispatchEvent(makePointerEvent('pointerdown', { pointerId: 5, clientX: 100, clientY: 100 }));
+    clockMs += 600;
+    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 5, clientX: 100, clientY: 160 }));
+    surface.dispatchEvent(makePointerEvent('pointerup', { pointerId: 5, clientX: 100, clientY: 160 }));
+    expect(actions.slam).toHaveBeenCalledTimes(1);
+    expect(actions.softDrop.mock.calls.length).toBeGreaterThan(softDropsBeforeRelease);
+
+    // 6. Fast diagonal swipe (dx=45, dy=60 -> dy <= 45 * 1.5) MUST NOT slam
+    surface.dispatchEvent(makePointerEvent('pointerdown', { pointerId: 6, clientX: 100, clientY: 100 }));
+    clockMs += 50;
+    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 6, clientX: 145, clientY: 160 }));
+    surface.dispatchEvent(makePointerEvent('pointerup', { pointerId: 6, clientX: 145, clientY: 160 }));
     expect(actions.slam).toHaveBeenCalledTimes(1);
   });
 
@@ -417,12 +449,14 @@ describe('InputController - Mouse, Touch, and Multitouch Gestures', () => {
     expect(actions.hold).toHaveBeenCalledTimes(2);
     expect(controller.getActivePointerCount()).toBe(1);
 
-    // While Finger 1 is STILL DOWN, Finger 4 swipes down to slam!
+    // While Finger 1 is STILL DOWN, Finger 4 performs a quick swipe down + release to slam!
     surface.dispatchEvent(makePointerEvent('pointerdown', { pointerId: 4, clientX: 250, clientY: 200 }));
     clockMs += 40;
-    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 4, clientX: 250, clientY: 255 }));
+    surface.dispatchEvent(makePointerEvent('pointermove', { pointerId: 4, clientX: 250, clientY: 270 }));
+    expect(actions.slam).not.toHaveBeenCalled();
+    clockMs += 10;
+    surface.dispatchEvent(makePointerEvent('pointerup', { pointerId: 4, clientX: 250, clientY: 270 }));
     expect(actions.slam).toHaveBeenCalledTimes(1);
-    surface.dispatchEvent(makePointerEvent('pointerup', { pointerId: 4, clientX: 250, clientY: 255 }));
     expect(controller.getActivePointerCount()).toBe(1);
 
     // Finger 1 slowly drags down to soft-drop while Finger 5 taps to rotate CW!
@@ -514,7 +548,7 @@ describe('InputController - Mouse, Touch, and Multitouch Gestures', () => {
   });
 
   it('integrates with TetrisGame for continuous bottom dragging during 1000ms lock delay', () => {
-    const game = new TetrisGame({ pieceSequence: ['O', 'T'] });
+    const game = new TetrisGame({ pieceSequence: ['O', 'T', 'I'] });
     const realSurface = document.createElement('div');
     document.body.appendChild(realSurface);
 
