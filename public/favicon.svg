@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#181f4d" />
+      <stop offset="100%" stop-color="#060816" />
+    </radialGradient>
+    <linearGradient id="mino-top" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#6cf3ff" />
+      <stop offset="55%" stop-color="#00d8ff" />
+      <stop offset="100%" stop-color="#008ec4" />
+    </linearGradient>
+    <linearGradient id="mino-accent" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffe588" />
+      <stop offset="55%" stop-color="#ffd166" />
+      <stop offset="100%" stop-color="#d89422" />
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="30" height="30" rx="7" fill="url(#bg)" stroke="#00e5ff" stroke-opacity="0.45" stroke-width="1.2" />
+  <!-- T-tetromino centered -->
+  <rect x="12.5" y="6.5" width="7" height="7" rx="1.6" fill="url(#mino-accent)" />
+  <rect x="13.5" y="7.5" width="5" height="1.4" rx="0.6" fill="#ffffff" fill-opacity="0.45" />
+  <rect x="5" y="14" width="7" height="7" rx="1.6" fill="url(#mino-top)" />
+  <rect x="6" y="15" width="5" height="1.4" rx="0.6" fill="#ffffff" fill-opacity="0.45" />
+  <rect x="12.5" y="14" width="7" height="7" rx="1.6" fill="url(#mino-top)" />
+  <rect x="13.5" y="15" width="5" height="1.4" rx="0.6" fill="#ffffff" fill-opacity="0.45" />
+  <rect x="20" y="14" width="7" height="7" rx="1.6" fill="url(#mino-top)" />
+  <rect x="21" y="15" width="5" height="1.4" rx="0.6" fill="#ffffff" fill-opacity="0.45" />
+</svg>

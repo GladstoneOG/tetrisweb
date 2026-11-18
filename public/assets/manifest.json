@@ -1,0 +1,63 @@
+{
+  "music": [
+    {
+      "id": "cosmos-1",
+      "title": "Calm Ambient 3 (Lifewave 2k)",
+      "minLevel": 1,
+      "maxLevel": 3,
+      "url": "/assets/audio/music/level_1_cosmos_gold.mp3",
+      "license": "CC0 1.0",
+      "author": "The Cynic Project (cynicmusic)"
+    },
+    {
+      "id": "cosmos-2",
+      "title": "Drifting Beyond the Stars",
+      "minLevel": 4,
+      "maxLevel": 6,
+      "url": "/assets/audio/music/level_2_cyan_electric.mp3",
+      "license": "CC-BY 3.0",
+      "author": "Hitctrl"
+    },
+    {
+      "id": "cosmos-3",
+      "title": "Planetrise (v1.1)",
+      "minLevel": 7,
+      "maxLevel": 9,
+      "url": "/assets/audio/music/level_3_emerald_aurora.mp3",
+      "license": "CC-BY 3.0",
+      "author": "FoxSynergy"
+    },
+    {
+      "id": "cosmos-4",
+      "title": "Synth Wave",
+      "minLevel": 10,
+      "maxLevel": 12,
+      "url": "/assets/audio/music/level_4_solar_synthwave.mp3",
+      "license": "CC0 1.0",
+      "author": "Alex McCulloch (Pro Sensory)"
+    },
+    {
+      "id": "cosmos-5",
+      "title": "Sky Trance",
+      "minLevel": 13,
+      "maxLevel": 999,
+      "url": "/assets/audio/music/level_5_prismatic_trance.mp3",
+      "license": "CC0 1.0",
+      "author": "MintoDog"
+    }
+  ],
+  "sfx": {
+    "move": "/assets/audio/sfx/move.wav",
+    "rotate": "/assets/audio/sfx/rotate.wav",
+    "slam": "/assets/audio/sfx/slam.wav",
+    "hold": "/assets/audio/sfx/hold.wav",
+    "lock": "/assets/audio/sfx/lock.wav",
+    "clear1": "/assets/audio/sfx/clear_1.wav",
+    "clear2": "/assets/audio/sfx/clear_2.wav",
+    "clear3": "/assets/audio/sfx/clear_3.wav",
+    "tetris": "/assets/audio/sfx/tetris.wav",
+    "levelUp": "/assets/audio/sfx/level_up.wav",
+    "gameOver": "/assets/audio/sfx/game_over.wav",
+    "uiClick": "/assets/audio/sfx/ui_click.wav"
+  }
+}
