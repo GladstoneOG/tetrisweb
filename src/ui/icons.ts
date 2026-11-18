@@ -47,11 +47,11 @@ const ICON_SPECS: Record<IconName, { viewBox?: string; nodes: SvgNodeSpec[] }> =
     nodes: [
       {
         tag: 'rect',
-        attrs: { x: 6, y: 5, width: 4.2, height: 14, rx: 1.4, fill: 'currentColor', stroke: 'none' },
+        attrs: { x: 3.5, y: 4, width: 5.6, height: 16, rx: 1.7, fill: 'currentColor', stroke: 'none' },
       },
       {
         tag: 'rect',
-        attrs: { x: 13.8, y: 5, width: 4.2, height: 14, rx: 1.4, fill: 'currentColor', stroke: 'none' },
+        attrs: { x: 14.9, y: 4, width: 5.6, height: 16, rx: 1.7, fill: 'currentColor', stroke: 'none' },
       },
     ],
   },

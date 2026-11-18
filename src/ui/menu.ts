@@ -232,7 +232,7 @@ export class MainMenu {
     const lbBtn = h(
       'button',
       {
-        class: 'btn btn-secondary',
+        class: 'btn btn-secondary btn-leaderboard',
         type: 'button',
         'data-action': 'open-leaderboard',
       },
@@ -376,7 +376,7 @@ export class MainMenu {
       h(
         'span',
         { class: 'play-btn-main' },
-        createIcon('play', { size: 17 }),
+        createIcon('play', { size: 19 }),
         h('span', { text: 'Play' })
       ),
       h('span', { class: 'play-btn-lvl', text: `Level ${level}` })
